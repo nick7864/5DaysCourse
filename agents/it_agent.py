@@ -1,6 +1,8 @@
 import sys
-
 sys.path.append("..")
+from dotenv import load_dotenv
+load_dotenv()  # 加載 .env 文件中的 API Key
+
 from google.adk.a2a.utils.agent_to_a2a import to_a2a
 from google.adk.agents import LlmAgent
 import uvicorn
@@ -33,7 +35,7 @@ it_agent = LlmAgent(
                 6.記錄所有帳號變更
                 7.強調資安注意事項
                 """,
-    model="gemini-2.0-flash-exp",
+    model="gemini-2.0-flash",
     tools=[
         create_email_acount,
         assign_system_permission,
@@ -45,13 +47,13 @@ it_agent = LlmAgent(
 
 # 啟動 A2A 服務
 if __name__ == "__main__":
-    # 使用 to_a2a 將 Agent 轉換為 A2A 服務
+    PORT = 8002
+    # 使用 to_a2a 將 Agent 轉換為 A2A 服務（需指定 port 以生成正確的 RPC URL）
     app = to_a2a(
         it_agent,
-        # title="公司內部 IT Agent",
-        # description="24小時專業IT助理",
-        # version="1.0.0",
+        host="localhost",
+        port=PORT,
     )
 
     # 使用 uvicorn 啟動服務
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    uvicorn.run(app, host="0.0.0.0", port=PORT)

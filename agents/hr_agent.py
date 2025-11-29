@@ -1,5 +1,8 @@
 import sys
 sys.path.append("..")
+from dotenv import load_dotenv
+load_dotenv()  # 加載 .env 文件中的 API Key
+
 from google.adk.agents import LlmAgent
 import uvicorn
 from tools.hr_tools import (
@@ -32,19 +35,19 @@ hr_agent = LlmAgent(
                 - 追蹤並確認每個步驟完成狀態
 
                 請使用繁體中文回應。""",
-    model="gemini-2.0-flash-exp",
+    model="gemini-2.0-flash",
     tools=[query_hr_policy, get_onboarding_checklist, search_employee_handbook],
 )
 
 # 啟動 A2A 服務
 if __name__ == "__main__":
-    # 使用 to_a2a 將 Agent 轉換為 A2A 服務
+    PORT = 8001
+    # 使用 to_a2a 將 Agent 轉換為 A2A 服務（需指定 port 以生成正確的 RPC URL）
     app = to_a2a(
         hr_agent,
-        # title="公司內部 HR Agent",
-        # description="24小時專業人力資源助理",
-        # version="1.0.0",
+        host="localhost",
+        port=PORT,
     )
 
     # 使用 uvicorn 啟動服務
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=PORT)

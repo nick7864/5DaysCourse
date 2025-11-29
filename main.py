@@ -10,16 +10,16 @@ from google.genai.types import Content, Part
 
 load_dotenv()
 
-# 建立遠端Agent代理
+# 建立遠端Agent代理 (A2A 協議的 agent_card 路徑是 /.well-known/agent-card.json)
 hr_remote = RemoteA2aAgent(
     name="人資專員",
-    agent_card=os.getenv("HR_AGENT_URL", "http://localhost:8001") + "/agent_card",
+    agent_card=os.getenv("HR_AGENT_URL", "http://localhost:8001") + "/.well-known/agent-card.json",
     description="專業人力資源專員,可以回答關於公司政策、福利、假期等問題",
 )
 
 it_remote = RemoteA2aAgent(
     name="IT專員",
-    agent_card=os.getenv("IT_AGENT_URL", "http://localhost:8002") + "/agent_card",
+    agent_card=os.getenv("IT_AGENT_URL", "http://localhost:8002") + "/.well-known/agent-card.json",
     description="專業IT專員,可以回答關於IT帳號、密碼、權限等問題",
 )
 
