@@ -1,5 +1,4 @@
-import json
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 # HR資料庫
 HR_POLICIES = {

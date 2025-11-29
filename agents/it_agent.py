@@ -1,11 +1,6 @@
 import sys
-sys.path.append("..")
-from dotenv import load_dotenv
-load_dotenv()  # 加載 .env 文件中的 API Key
 
-from google.adk.a2a.utils.agent_to_a2a import to_a2a
-from google.adk.agents import LlmAgent
-import uvicorn
+sys.path.append("..")
 from tools.it_tools import (
     create_email_acount,
     assign_system_permission,
@@ -13,6 +8,14 @@ from tools.it_tools import (
     reset_password,
     get_it_support_info,
 )
+from google.adk.a2a.utils.agent_to_a2a import to_a2a
+from google.adk.agents import LlmAgent
+import uvicorn
+
+from dotenv import load_dotenv
+
+load_dotenv()  # 加載 .env 文件中的 API Key
+
 
 # 建立IT代理
 it_agent = LlmAgent(

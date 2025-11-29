@@ -1,8 +1,7 @@
 import sys
+
 sys.path.append("..")
 from dotenv import load_dotenv
-load_dotenv()  # 加載 .env 文件中的 API Key
-
 from google.adk.agents import LlmAgent
 import uvicorn
 from tools.hr_tools import (
@@ -11,6 +10,9 @@ from tools.hr_tools import (
     search_employee_handbook,
 )
 from google.adk.a2a.utils.agent_to_a2a import to_a2a
+
+load_dotenv()  # 加載 .env 文件中的 API Key
+
 
 # 建立HR代理
 hr_agent = LlmAgent(
