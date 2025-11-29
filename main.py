@@ -3,8 +3,9 @@ import os
 from dotenv import load_dotenv
 from google.adk.agents import LlmAgent
 from google.adk import Runner
-from google.adk.sessions import DatabaseSessionService
+from google.adk.sessions import InMemorySessionService
 from google.adk.agents.remote_a2a_agent import RemoteA2aAgent
+from google.genai.types import Content, Part
 
 
 load_dotenv()
@@ -12,13 +13,13 @@ load_dotenv()
 # 建立遠端Agent代理
 hr_remote = RemoteA2aAgent(
     name="人資專員",
-    url=os.getenv("HR_AGENT_URL", "http://localhost:8001"),
+    agent_card=os.getenv("HR_AGENT_URL", "http://localhost:8001") + "/agent_card",
     description="專業人力資源專員,可以回答關於公司政策、福利、假期等問題",
 )
 
 it_remote = RemoteA2aAgent(
     name="IT專員",
-    url=os.getenv("IT_AGENT_URL", "http://localhost:8002"),
+    agent_card=os.getenv("IT_AGENT_URL", "http://localhost:8002") + "/agent_card",
     description="專業IT專員,可以回答關於IT帳號、密碼、權限等問題",
 )
 
@@ -26,7 +27,7 @@ it_remote = RemoteA2aAgent(
 coordinator = LlmAgent(
     name="協調專員",
     description="專業協調專員,可以回答關於公司政策、福利、假期等問題",
-    instructions="""你是企業入職協調助理，負責協助新員工順利完成入職流程。
+    instruction="""你是企業入職協調助理，負責協助新員工順利完成入職流程。
                 你的能力:
                 1. 可以透過「HR專員」取得人事政策、福利、假期等資訊
                 2. 可以透過「IT管理員」協助建立帳號、設定權限
@@ -45,22 +46,35 @@ coordinator = LlmAgent(
                 - 追蹤並確認每個步驟完成狀態
 
                 請使用繁體中文回應。""",
-    model="gemini-2.0-flash-exp",
-    tools=[hr_remote, it_remote],
+    model="gemini-2.0-flash",
+    sub_agents=[hr_remote, it_remote],
 )
 
-# 建立持久記憶體
-session_service = DatabaseSessionService(db_path="onboarding_sessions.db")
+# 建立記憶體 Session 服務（測試用，不持久化）
+session_service = InMemorySessionService()
 
 # 建立Runner
 runner = Runner(
+    app_name="enterprise_onboarding",
     agent=coordinator,
     session_service=session_service,
 )
 
 
 async def main():
+    user_id = "employee_001"
     session_id = "onboarding_session_001"
+    app_name = "enterprise_onboarding"
+
+    # 先創建 Session（如果不存在）
+    existing_session = await session_service.get_session(
+        app_name=app_name, user_id=user_id, session_id=session_id
+    )
+    if not existing_session:
+        await session_service.create_session(
+            app_name=app_name, user_id=user_id, session_id=session_id
+        )
+        print("已建立新的對話 Session")
 
     while True:
         try:
@@ -75,12 +89,16 @@ async def main():
 
             # 執行對話
             print("\n 系統處理中...\n")
-            async for chunk in runner.run_async(
-                session_id=session_id, new_message=user_input
+            # 將用戶輸入轉換為 Content 對象
+            message = Content(role="user", parts=[Part(text=user_input)])
+            async for event in runner.run_async(
+                user_id=user_id, session_id=session_id, new_message=message
             ):
                 # 即時顯示回應
-                if chunk.content:
-                    print(chunk.content, end="", flush=True)
+                if event.content and event.content.parts:
+                    for part in event.content.parts:
+                        if hasattr(part, 'text') and part.text:
+                            print(part.text, end="", flush=True)
 
             print()  # 換行
 

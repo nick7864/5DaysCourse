@@ -1,21 +1,19 @@
 import sys
-
 sys.path.append("..")
-from google.adk import LlmAgent
-from google.genai import types
+from google.adk.agents import LlmAgent
 import uvicorn
 from tools.hr_tools import (
     query_hr_policy,
     get_onboarding_checklist,
     search_employee_handbook,
 )
-from google.adk.a2a import a2a
+from google.adk.a2a.utils.agent_to_a2a import to_a2a
 
 # 建立HR代理
 hr_agent = LlmAgent(
     name="HR專員",
     description="專業人力資源專員,可以回答關於公司政策、福利、假期等問題",
-    instructions="""你是企業入職協調助理，負責協助新員工順利完成入職流程。
+    instruction="""你是企業入職協調助理，負責協助新員工順利完成入職流程。
                 你的能力:
                 1. 可以透過「HR專員」取得人事政策、福利、假期等資訊
                 2. 可以透過「IT管理員」協助建立帳號、設定權限
@@ -38,14 +36,15 @@ hr_agent = LlmAgent(
     tools=[query_hr_policy, get_onboarding_checklist, search_employee_handbook],
 )
 
-# 啟動 A2A 服務（新寫法：直接用 a2a 包裝並啟動）
+# 啟動 A2A 服務
 if __name__ == "__main__":
-    # 這一行就全部搞定：包裝 Agent 成 A2A 服務 + 自動啟動 uvicorn
-    a2a(
+    # 使用 to_a2a 將 Agent 轉換為 A2A 服務
+    app = to_a2a(
         hr_agent,
-        port=8001,
-        host="0.0.0.0",
-        title="公司內部 HR Agent",  # 可選：自訂 agent.json 的 title
-        description="24小時專業人力資源助理",  # 可選：覆蓋 instruction 的 description
-        version="1.0.0",  # 可選：版本號
+        # title="公司內部 HR Agent",
+        # description="24小時專業人力資源助理",
+        # version="1.0.0",
     )
+
+    # 使用 uvicorn 啟動服務
+    uvicorn.run(app, host="0.0.0.0", port=8001)

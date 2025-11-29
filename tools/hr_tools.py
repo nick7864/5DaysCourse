@@ -82,23 +82,24 @@ def get_onboarding_checklist(employee_name: str) -> Dict:
         ],
     }
 
-    def search_employee_handbook(keyword: str) -> str:
-        """
-        搜尋員工手冊
 
-        Args:
-            keyword: 搜尋關鍵字,例如 "請假", "加班", "出差"
+def search_employee_handbook(keyword: str) -> str:
+    """
+    搜尋員工手冊
 
-        Returns:
-            相關規定說明
-        """
-        handbook = {
-            "請假": "請假需提前3天申請，病假當日通知主管即可。特休需經主管核准。",
-            "加班": "加班需事前申請，平日加班費為1.33倍，假日為1.66倍。",
-            "出差": "國內出差補助每日1000元，國外出差依地區有不同標準。",
-            "考核": "每半年進行一次績效考核，評分影響年終獎金及升遷。",
-        }
-        if keyword in handbook:
-            return handbook[keyword]
-        else:
-            return f"未找到關鍵字{keyword}的手冊,可用關鍵字{'、'.join(handbook.keys())}"
+    Args:
+        keyword: 搜尋關鍵字,例如 "請假", "加班", "出差"
+
+    Returns:
+        相關規定說明
+    """
+    handbook = {
+        "請假": "請假需提前3天申請，病假當日通知主管即可。特休需經主管核准。",
+        "加班": "加班需事前申請，平日加班費為1.33倍，假日為1.66倍。",
+        "出差": "國內出差補助每日1000元，國外出差依地區有不同標準。",
+        "考核": "每半年進行一次績效考核，評分影響年終獎金及升遷。",
+    }
+    if keyword in handbook:
+        return handbook[keyword]
+    else:
+        return f"未找到關鍵字{keyword}的手冊,可用關鍵字{'、'.join(handbook.keys())}"
