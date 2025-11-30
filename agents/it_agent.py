@@ -7,6 +7,7 @@ from tools.it_tools import (
     setup_vpn_access,
     reset_password,
     get_it_support_info,
+    _load_employee_data_from_sheet,
 )
 from google.adk.a2a.utils.agent_to_a2a import to_a2a
 from google.adk.agents import LlmAgent
@@ -45,6 +46,7 @@ it_agent = LlmAgent(
         setup_vpn_access,
         reset_password,
         get_it_support_info,
+        _load_employee_data_from_sheet,
     ],
 )
 
