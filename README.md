@@ -92,3 +92,28 @@ IT_AGENT_URL=http://localhost:8002
 
 當三個服務都成功啟動後，您可以在執行 `main.py` 的那個終端機中，開始與入職協調系統進行對話。
 輸入 `exit` 或 `離開` 來結束對話。
+
+### 6. 連動google sheet
+
+需設置google sheet的憑證，並在專案根目錄下：
+
+1. 建立`credentials.json`
+2. 建立`.env`，並填寫您的 Google Gemini API 金鑰
+
+```python
+# --- Google Sheets 連線設定 ---
+# 服務帳號金鑰
+SERVICE_ACCOUNT_FILE = "credentials.json"
+# 您要操作的 Google Sheet 名稱
+SHEET_NAME = "your_google_sheet_name"
+# 您要操作的工作表名稱 (通常是第一個)
+WORKSHEET_NAME = "your_worksheet_name"
+
+SHEET_ID = 'your_google_sheet_id'
+```
+
+
+
+
+
+
