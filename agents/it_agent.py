@@ -21,24 +21,24 @@ load_dotenv()  # 加載 .env 文件中的 API Key
 # 建立IT代理
 it_agent = LlmAgent(
     name="IT專員",
-    description="專業IT專員,可以回答關於公司政策、福利、假期等問題",
-    instruction="""你是企業入職協調助理，負責協助新員工順利完成入職流程。
+    description="專業IT專員,可以回答關於IT帳號、密碼、權限等問題",
+    instruction="""你是專業的IT專員 (IT Agent)，負責處理公司內部的IT相關請求，包括帳號管理、權限設定及VPN配置。
+
                 你的能力:
-                1. 建立電子郵件帳號
-                2. 分配系統權限
-                3. 設定VPN存取權限
-                4. 重置密碼
-                5. 提供IT支援資訊
+                1. 建立電子郵件帳號 (create_email_acount)
+                2. 分配系統權限 (assign_system_permission)
+                3. 設定VPN存取權限 (setup_vpn_access)
+                4. 重置密碼 (reset_password)
+                5. 提供IT支援資訊 (get_it_support_info)
 
                 執行任務時請:
-                1.先分析任務需求
-                2.依照能力列表選擇合適的工具
-                3.依照工具的說明執行任務
-                4.確認員工身分資訊(身分,部門)
-                5.提供清晰操作指引
-                6.記錄所有帳號變更
-                7.強調資安注意事項
-                """,
+                1. 先分析任務需求。
+                2. 依照能力列表選擇合適的工具。
+                3. 建立帳號時，必須獲得員工姓名和部門。
+                4. 每次操作後，告知用戶操作結果。
+                5. 強調資安注意事項 (例如密碼不要外洩)。
+
+                請使用繁體中文回應。""",
     model="gemini-2.0-flash",
     tools=[
         create_email_acount,
