@@ -4,3 +4,4 @@ uvicorn
 fastapi
 pydantic
 python-dotenv
+gspread
